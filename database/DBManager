@@ -1,0 +1,21 @@
+import mysql.connector
+
+class DBManager():
+
+  def __init__(self) -> None:
+    print("database started")
+
+  def addToDB(self, amount):
+    db = mysql.connector.connect(
+      host="localhost",
+      user="root",
+      password="HKLif9hzspfp99q1z94aohHiuwfapwqh")
+    cursor = db.cursor()
+
+    cursor.execute("USE kundenzaehler")
+
+    sql = "INSERT INTO daten (kundenzahl) VALUES (%s)"
+    val = (amount)
+    cursor.execute(sql, val)
+
+    db.commit()
