@@ -9,6 +9,7 @@ import numpy as np
 import argparse, imutils
 import time, dlib, cv2, datetime
 from itertools import zip_longest
+from database import DBManager
 
 t0 = time.time()
 
@@ -72,6 +73,12 @@ def run():
 	totalFrames = 0
 	totalDown = 0
 	totalUp = 0
+	#total of people currently inside the building
+	totalIn = 0
+	#Setting up database manager
+	dbmanager = DBManager()
+	dbmanager.addToDB(totalIn)
+
 	x = []
 	empty=[]
 	empty1=[]
@@ -225,6 +232,8 @@ def run():
 					# line, count the object
 					if direction < 0 and centroid[1] < H // 2:
 						totalUp += 1
+						totalIn += 1
+						dbmanager.addToDB(totalIn)
 						empty.append(totalUp)
 						to.counted = True
 
@@ -233,6 +242,8 @@ def run():
 					# center line, count the object
 					elif direction > 0 and centroid[1] > H // 2:
 						totalDown += 1
+						totalIn -= 1
+						dbmanager.addToDB(totalIn)
 						empty1.append(totalDown)
 						#print(empty1[-1])
 						# if the people limit exceeds over threshold, send an email alert
